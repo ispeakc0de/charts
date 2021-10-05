@@ -1,0 +1,15 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: chaos-demo-hub-chart-disk-fill-zookeeper-level-1
+  namespace: oi137-litmus
+spec:
+  appinfo:
+    appns: 'my-application'
+    applabel: 'composant=dd021-zk'
+    appkind: 'StatefulSet'
+  # It can be active/stop
+  engineState: 'active'
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: demo-hub-chart-disk-fill-zookeeper-level-1

@@ -1,0 +1,90 @@
+apiVersion: litmuschaos.io/v1alpha1
+description:
+  message: |
+    Injects network packet loss on pods belonging to an app deployment
+kind: ChaosExperiment
+metadata:
+  name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+  labels:
+    name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/component: chaosexperiment
+    app.kubernetes.io/version: latest
+spec:
+  definition:
+    scope: Namespaced
+    permissions:
+      - apiGroups:
+          - ""
+          - batch
+          - apps
+          - apps.openshift.io
+          - argoproj.io
+          - litmuschaos.io
+        resources:
+          - jobs
+          - pods
+          - pods/log
+          - replicationcontrollers
+          - deployments
+          - statefulsets
+          - daemonsets
+          - replicasets
+          - deploymentconfigs
+          - rollouts
+          - pods/exec
+          - events
+          - chaosengines
+          - chaosexperiments
+          - chaosresults
+        verbs:
+          - get
+          - list
+          - patch
+          - create
+          - update
+          - delete
+          - deletecollection
+    image: litmuschaos/go-runner:latest
+    imagePullPolicy: Always
+    args:
+      - -c
+      - ./experiments -name pod-network-loss
+    command:
+      - /bin/bash
+    env:
+      - name: TOTAL_CHAOS_DURATION
+        value: "60"
+      - name: TARGET_CONTAINER
+        value: "zookeeper"
+      - name: TC_IMAGE
+        value:  "gaiadocker/iproute2"
+      - name: NETWORK_INTERFACE
+        value:  "eth0"
+      - name: NETWORK_PACKET_LOSS_PERCENTAGE
+        value:  "100"
+      - name: PODS_AFFECTED_PERC
+        value: ""
+      - name: DESTINATION_IPS
+        value: ""
+      - name: DESTINATION_HOSTS
+        value: ""
+      - name: TARGET_PODS
+        value: ""
+      - name: RAMP_TIME
+        value: ""
+      - name: LIB
+        value: "pumba"
+      - name: LIB_IMAGE
+        value: "litmuschaos/go-runner:ci"
+      - name: CONTAINER_RUNTIME
+        value: "docker"
+      - name: SOCKET_PATH
+        value: "/var/vcap/sys/run/docker/docker.sock"
+      - name: SEQUENCE
+        value: "parallel"
+    labels:
+      name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+      app.kubernetes.io/part-of: litmus
+      app.kubernetes.io/component: experiment-job
+      app.kubernetes.io/version: latest

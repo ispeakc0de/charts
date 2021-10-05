@@ -1,0 +1,59 @@
+apiVersion: litmuchaos.io/v1alpha1
+kind: ChartServiceVersion
+metadata:
+  createdAt: 2019-09-26T10:28:08Z
+  name: my-hub-demo-second
+  version: 0.1.17
+  annotations:
+    categories: Kubernetes
+    chartDescription: Injects generic kubernetes chaos
+spec:
+  displayName: Generic Chaos
+  categoryDescription: >
+    Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications. It groups containers that make up an application into logical units for easier management and discovery. It will install all the experiments which can be used to inject chaos into containerized applications.
+  experiments:
+    - my-hub-demo-second-container-kill-nginx-level-1
+    - my-hub-demo-second-container-kill-zookeeper-level-1
+    - my-hub-demo-second-disk-fill-nginx-level-1
+    - my-hub-demo-second-disk-fill-zookeeper-level-1
+    - my-hub-demo-second-pod-cpu-hog-nginx-level-1
+    - my-hub-demo-second-pod-cpu-hog-zookeeper-level-1
+    - my-hub-demo-second-pod-io-stress-nginx-level-1
+    - my-hub-demo-second-pod-io-stress-zookeeper-level-1
+    - my-hub-demo-second-pod-memory-hog-nginx-level-1
+    - my-hub-demo-second-pod-memory-hog-zookeeper-level-1
+    - my-hub-demo-second-pod-network-latency-nginx-level-1
+    - my-hub-demo-second-pod-network-latency-zookeeper-level-1
+    - my-hub-demo-second-pod-network-loss-nginx-level-1
+    - my-hub-demo-second-pod-network-loss-zookeeper-level-1
+  keywords:
+    - Kubernetes
+    - Container
+    - Pod
+    - Disk
+    - IO
+    - Filesystem
+    - Network
+    - CPU
+    - Memory
+    - DNS
+  platforms:
+    - PKS
+    - 
+  maintainers:
+    - name: ChaosTeam
+      email: _chaos@pole-emploi.fr
+  minKubeVersion: 1.0.0
+  provider:
+    name: Pole Emploi
+  links:
+    - name: Mattermost Chaos
+      url: https://mattermost.pe-qvr.net/tmj/channels/chaos-engineering
+    - name: Documentation
+      url: http://git-scm.pole-emploi.intra/chaos/produits/litmus/chaos-charts/tree/datamap
+    - name: Source Code
+      url: http://git-scm.pole-emploi.intra/chaos/produits/litmus/chaos-charts/tree/datamap
+  icon:
+    - url: https://raw.githubusercontent.com/litmuschaos/charthub.litmuschaos.io/master/public/litmus.ico
+      mediatype: image/png
+  chaosexpcrdlink: https://raw.githubusercontent.com/litmuschaos/chaos-charts/master/charts/generic/experiments.yaml

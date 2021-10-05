@@ -1,0 +1,48 @@
+apiVersion: litmuchaos.io/v1alpha1
+kind: ChartServiceVersion
+metadata:
+  name: demo-hub-chart-level-1
+  version: 0.1.0
+  annotations:
+    categories: demo-hub-chart-level-1
+    chartDescription: Injects chaos on demo-hub-chart-level-1 application
+spec:
+  displayName: demo-hub-chart-level-1
+  experiments:
+    - demo-hub-chart-container-kill-nginx-level-1
+    - demo-hub-chart-disk-fill-nginx-level-1
+    - demo-hub-chart-pod-memory-hog-nginx-level-1
+    - demo-hub-chart-pod-cpu-hog-nginx-level-1
+    - demo-hub-chart-pod-io-stress-nginx-level-1
+    - demo-hub-chart-pod-network-loss-nginx-level-1
+    - demo-hub-chart-pod-network-latency-nginx-level-1
+    - demo-hub-chart-container-kill-zookeeper-level-1
+    - demo-hub-chart-disk-fill-zookeeper-level-1
+    - demo-hub-chart-pod-memory-hog-zookeeper-level-1
+    - demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+    - demo-hub-chart-pod-io-stress-zookeeper-level-1
+    - demo-hub-chart-pod-network-loss-zookeeper-level-1
+    - demo-hub-chart-pod-network-latency-zookeeper-level-1
+  keywords:
+    - Kubernetes
+    - datamap-preprod
+    - Pod
+    - Memory
+    - CPU
+    - Network
+    - Disk
+  platforms:
+    - preprod02
+  maintainers:
+    - name: ChaosTeam
+      email: _chaos@pole-emploi.fr
+  provider:
+    name: PoleEmploi
+  links:
+    - name: Mattermost Chaos
+      url: https://mattermost.pe-qvr.net/tmj/channels/chaos-engineering
+    - name: Documentation
+      url: http://git-scm.pole-emploi.intra/chaos/produits/litmus/chaos-charts/tree/datamap
+  icon:
+    - url:
+      mediatype: ""

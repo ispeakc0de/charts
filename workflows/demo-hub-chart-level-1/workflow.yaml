@@ -1,0 +1,1716 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: demo-hub-chart-level-1
+  namespace: default
+spec:
+  entrypoint: custom-chaos
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: argo-chaos
+  templates:
+    - name: custom-chaos
+      steps:
+        - - name: install-chaos-experiments
+            template: install-chaos-experiments
+        - - name: demo-hub-chart-container-kill-nginx-level-1
+            template: demo-hub-chart-container-kill-nginx-level-1
+        - - name: demo-hub-chart-disk-fill-nginx-level-1
+            template: demo-hub-chart-disk-fill-nginx-level-1
+        - - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+            template: demo-hub-chart-pod-memory-hog-nginx-level-1
+        - - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+            template: demo-hub-chart-pod-cpu-hog-nginx-level-1
+        - - name: demo-hub-chart-pod-io-stress-nginx-level-1
+            template: demo-hub-chart-pod-io-stress-nginx-level-1
+        - - name: demo-hub-chart-pod-network-loss-nginx-level-1
+            template: demo-hub-chart-pod-network-loss-nginx-level-1
+        - - name: demo-hub-chart-pod-network-latency-nginx-level-1
+            template: demo-hub-chart-pod-network-latency-nginx-level-1
+        - - name: demo-hub-chart-container-kill-zookeeper-level-1
+            template: demo-hub-chart-container-kill-zookeeper-level-1
+        - - name: demo-hub-chart-disk-fill-zookeeper-level-1
+            template: demo-hub-chart-disk-fill-zookeeper-level-1
+        - - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+            template: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+        - - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+            template: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+        - - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+            template: demo-hub-chart-pod-io-stress-zookeeper-level-1
+        - - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+            template: demo-hub-chart-pod-network-loss-zookeeper-level-1
+        - - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+            template: demo-hub-chart-pod-network-latency-zookeeper-level-1
+    - name: install-chaos-experiments
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-container-kill-nginx-level-1
+            path: /tmp/demo-hub-chart-container-kill-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Kills a container belonging to an application pod 
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-container-kill-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-container-kill-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - apps
+                          - batch
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - events
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - update
+                          - patch
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    Args:
+                      - -c
+                      - ./experiments -name container-kill
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TARGET_CONTAINER
+                        value: "nginx"
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: CHAOS_INTERVAL
+                        value: "10"
+                      - name: SIGNAL
+                        value: "SIGKILL"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "120"
+                      - name: PODS_AFFECTED_PERC
+                        value: "40"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:latest"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-container-kill-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-disk-fill-nginx-level-1
+            path: /tmp/demo-hub-chart-disk-fill-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Fillup Ephemeral Storage of a Resource
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-disk-fill-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-disk-fill-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - apps
+                          - batch
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/exec
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name disk-fill
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TARGET_CONTAINER
+                        value: "nginx"
+                      - name: FILL_PERCENTAGE
+                        value: "80"
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: DATA_BLOCK_SIZE
+                        value: "256"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: EPHEMERAL_STORAGE_MEBIBYTES
+                        value: ""
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:latest"
+                      - name: CONTAINER_PATH
+                        value: "/var/lib/docker/containers"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-disk-fill-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+            path: /tmp/demo-hub-chart-pod-memory-hog-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects memory consumption on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-memory-hog-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-pod-memory-hog-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-memory-hog-exec
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: MEMORY_CONSUMPTION
+                        value: "500"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: CHAOS_KILL_COMMAND
+                        value: "kill $(find /proc -name exe -lname '*/dd' 2>&1 | grep -v 'Permission denied' | awk -F/ '{print $(NF-1)}' | head -n 1)"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-memory-hog-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+            path: /tmp/demo-hub-chart-pod-cpu-hog-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects cpu consumption on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - events
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-cpu-hog-exec
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: CPU_CORES
+                        value: "1"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: CHAOS_KILL_COMMAND
+                        value: "kill $(find /proc -name exe -lname '*/md5sum' 2>&1 | grep -v 'Permission denied' | awk -F/ '{print $(NF-1)}')"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-io-stress-nginx-level-1
+            path: /tmp/demo-hub-chart-pod-io-stress-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    IO stress on a app pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-io-stress-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-pod-io-stress-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-io-stress
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "120"
+                      - name: FILESYSTEM_UTILIZATION_PERCENTAGE
+                        value: "10"
+                      - name: FILESYSTEM_UTILIZATION_BYTES
+                        value: ""
+                      - name: NUMBER_OF_WORKERS
+                        value: "4"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: VOLUME_MOUNT_PATH
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-io-stress-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-network-loss-nginx-level-1
+            path: /tmp/demo-hub-chart-pod-network-loss-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects network packet loss on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-network-loss-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-pod-network-loss-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - get
+                          - list
+                          - patch
+                          - create
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-network-loss
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: TARGET_CONTAINER
+                        value: "nginx"
+                      - name: TC_IMAGE
+                        value:  "gaiadocker/iproute2"
+                      - name: NETWORK_INTERFACE
+                        value:  "eth0"
+                      - name: NETWORK_PACKET_LOSS_PERCENTAGE
+                        value:  "100"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: DESTINATION_IPS
+                        value: ""
+                      - name: DESTINATION_HOSTS
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-network-loss-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-network-latency-nginx-level-1
+            path: /tmp/demo-hub-chart-pod-network-latency-nginx-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects network latency on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-network-latency-nginx-level-1
+                  labels:
+                    name: demo-hub-chart-pod-network-latency-nginx-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-network-latency
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: TARGET_CONTAINER
+                        value: "nginx"
+                      - name: TC_IMAGE
+                        value:  "gaiadocker/iproute2"
+                      - name: NETWORK_INTERFACE
+                        value:  "eth0"
+                      - name: NETWORK_LATENCY
+                        value:  "2000"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: DESTINATION_IPS
+                        value: ""
+                      - name: DESTINATION_HOSTS
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-network-latency-nginx-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-container-kill-zookeeper-level-1
+            path: /tmp/demo-hub-chart-container-kill-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Kills a container belonging to an application pod 
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-container-kill-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-container-kill-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - apps
+                          - batch
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - events
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - update
+                          - patch
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    Args:
+                      - -c
+                      - ./experiments -name container-kill
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TARGET_CONTAINER
+                        value: "nginx"
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: CHAOS_INTERVAL
+                        value: "10"
+                      - name: SIGNAL
+                        value: "SIGKILL"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "120"
+                      - name: PODS_AFFECTED_PERC
+                        value: "40"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:latest"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-container-kill-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-disk-fill-zookeeper-level-1
+            path: /tmp/demo-hub-chart-disk-fill-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Fillup Ephemeral Storage of a Resource
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-disk-fill-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-disk-fill-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - apps
+                          - batch
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/exec
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name disk-fill
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TARGET_CONTAINER
+                        value: "zookeeper"
+                      - name: FILL_PERCENTAGE
+                        value: "80"
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: DATA_BLOCK_SIZE
+                        value: "256"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: EPHEMERAL_STORAGE_MEBIBYTES
+                        value: ""
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:latest"
+                      - name: CONTAINER_PATH
+                        value: "/var/lib/docker/containers"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-disk-fill-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+            path: /tmp/demo-hub-chart-pod-memory-hog-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects memory consumption on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-memory-hog-exec
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: MEMORY_CONSUMPTION
+                        value: "500"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: CHAOS_KILL_COMMAND
+                        value: "kill $(find /proc -name exe -lname '*/dd' 2>&1 | grep -v 'Permission denied' | awk -F/ '{print $(NF-1)}' | head -n 1)"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+            path: /tmp/demo-hub-chart-pod-cpu-hog-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects cpu consumption on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - events
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-cpu-hog-exec
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: CPU_CORES
+                        value: "1"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: CHAOS_KILL_COMMAND
+                        value: "kill $(find /proc -name exe -lname '*/md5sum' 2>&1 | grep -v 'Permission denied' | awk -F/ '{print $(NF-1)}')"
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+            path: /tmp/demo-hub-chart-pod-io-stress-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    IO stress on a app pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:ci
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-io-stress
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "120"
+                      - name: FILESYSTEM_UTILIZATION_PERCENTAGE
+                        value: "10"
+                      - name: FILESYSTEM_UTILIZATION_BYTES
+                        value: ""
+                      - name: NUMBER_OF_WORKERS
+                        value: "4"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: VOLUME_MOUNT_PATH
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+            path: /tmp/demo-hub-chart-pod-network-loss-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects network packet loss on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - get
+                          - list
+                          - patch
+                          - create
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-network-loss
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: TARGET_CONTAINER
+                        value: "zookeeper"
+                      - name: TC_IMAGE
+                        value:  "gaiadocker/iproute2"
+                      - name: NETWORK_INTERFACE
+                        value:  "eth0"
+                      - name: NETWORK_PACKET_LOSS_PERCENTAGE
+                        value:  "100"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: DESTINATION_IPS
+                        value: ""
+                      - name: DESTINATION_HOSTS
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                
+          - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+            path: /tmp/demo-hub-chart-pod-network-latency-zookeeper-level-1.yaml
+            raw:
+              data: >
+                apiVersion: litmuschaos.io/v1alpha1
+                description:
+                  message: |
+                    Injects network latency on pods belonging to an app deployment
+                kind: ChaosExperiment
+                metadata:
+                  name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+                  labels:
+                    name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+                    app.kubernetes.io/part-of: litmus
+                    app.kubernetes.io/component: chaosexperiment
+                    app.kubernetes.io/version: latest
+                spec:
+                  definition:
+                    scope: Namespaced
+                    permissions:
+                      - apiGroups:
+                          - ""
+                          - batch
+                          - apps
+                          - apps.openshift.io
+                          - argoproj.io
+                          - litmuschaos.io
+                        resources:
+                          - jobs
+                          - pods
+                          - pods/log
+                          - replicationcontrollers
+                          - deployments
+                          - statefulsets
+                          - daemonsets
+                          - replicasets
+                          - deploymentconfigs
+                          - rollouts
+                          - pods/exec
+                          - events
+                          - chaosengines
+                          - chaosexperiments
+                          - chaosresults
+                        verbs:
+                          - create
+                          - list
+                          - get
+                          - patch
+                          - update
+                          - delete
+                          - deletecollection
+                    image: litmuschaos/go-runner:latest
+                    imagePullPolicy: Always
+                    args:
+                      - -c
+                      - ./experiments -name pod-network-latency
+                    command:
+                      - /bin/bash
+                    env:
+                      - name: TOTAL_CHAOS_DURATION
+                        value: "60"
+                      - name: TARGET_CONTAINER
+                        value: "zookeeper"
+                      - name: TC_IMAGE
+                        value:  "gaiadocker/iproute2"
+                      - name: NETWORK_INTERFACE
+                        value:  "eth0"
+                      - name: NETWORK_LATENCY
+                        value:  "2000"
+                      - name: PODS_AFFECTED_PERC
+                        value: ""
+                      - name: DESTINATION_IPS
+                        value: ""
+                      - name: DESTINATION_HOSTS
+                        value: ""
+                      - name: TARGET_PODS
+                        value: ""
+                      - name: RAMP_TIME
+                        value: ""
+                      - name: LIB
+                        value: "pumba"
+                      - name: LIB_IMAGE
+                        value: "litmuschaos/go-runner:ci"
+                      - name: CONTAINER_RUNTIME
+                        value: "docker"
+                      - name: SOCKET_PATH
+                        value: "/var/vcap/sys/run/docker/docker.sock"
+                      - name: SEQUENCE
+                        value: "parallel"
+                    labels:
+                      name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+                      app.kubernetes.io/part-of: litmus
+                      app.kubernetes.io/component: experiment-job
+                      app.kubernetes.io/version: latest
+                container:
+        args:
+        command:
+          - sh
+          - -c
+        image: litmuschaos/k8s:latest
+
+    
+    - name: demo-hub-chart-container-kill-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-container-kill-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-container-kill-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-container-kill-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-container-kill-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-container-kill-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-disk-fill-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-disk-fill-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-disk-fill-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-disk-fill-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-disk-fill-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-disk-fill-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-memory-hog-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-memory-hog-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-memory-hog-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-cpu-hog-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-cpu-hog-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-cpu-hog-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-io-stress-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-io-stress-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-io-stress-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-io-stress-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-io-stress-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-io-stress-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-network-loss-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-network-loss-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-network-loss-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-network-loss-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-network-loss-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-network-loss-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-network-latency-nginx-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-network-latency-nginx-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-network-latency-nginx-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-network-latency-nginx-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'app=my-application'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-network-latency-nginx-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-network-latency-nginx-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-container-kill-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-container-kill-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-container-kill-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-container-kill-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-container-kill-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-container-kill-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-disk-fill-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-disk-fill-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-disk-fill-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-disk-fill-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-disk-fill-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-disk-fill-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-memory-hog-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-memory-hog-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-memory-hog-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-cpu-hog-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-cpu-hog-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-io-stress-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-io-stress-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-io-stress-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-network-loss-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-network-loss-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-network-loss-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest
+    
+    - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+      inputs:
+        artifacts:
+          - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+            path: /tmp/chaosengine-demo-hub-chart-pod-network-latency-zookeeper-level-1.yaml
+            raw:
+              data: |
+
+                apiVersion: litmuschaos.io/v1alpha1
+                kind: ChaosEngine
+                metadata:
+                  name: chaos-demo-hub-chart-pod-network-latency-zookeeper-level-1
+                  namespace: oi137-litmus
+                spec:
+                  appinfo:
+                    appns: 'my-application'
+                    applabel: 'composant=dd021-zk'
+                    appkind: 'StatefulSet'
+                  # It can be active/stop
+                  engineState: 'active'
+                  chaosServiceAccount: litmus-admin
+                  experiments:
+                    - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+                
+      container:
+        args:
+          - -file=/tmp/chaosengine-demo-hub-chart-pod-network-latency-zookeeper-level-1.yaml
+          - -saveName=/tmp/engine-name
+        image: litmuschaos/litmus-checker:latest

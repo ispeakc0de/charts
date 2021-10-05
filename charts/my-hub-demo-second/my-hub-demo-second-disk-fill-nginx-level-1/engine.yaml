@@ -1,0 +1,15 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: chaos-my-hub-demo-second-disk-fill-nginx-level-1
+  namespace: oi137-litmus
+spec:
+  appinfo:
+    appns: 'random-namespace'
+    applabel: 'app=my-application'
+    appkind: 'StatefulSet'
+  # It can be active/stop
+  engineState: 'active'
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: my-hub-demo-second-disk-fill-nginx-level-1

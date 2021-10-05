@@ -1,0 +1,44 @@
+packageName: my-hub-demo-second
+experiments:
+  - name: my-hub-demo-second-container-kill-nginx-level-1
+    CSV: my-hub-demo-second-container-kill-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-container-kill-nginx-level-1"
+  - name: my-hub-demo-second-container-kill-zookeeper-level-1
+    CSV: my-hub-demo-second-container-kill-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-container-kill-zookeeper-level-1"
+  - name: my-hub-demo-second-disk-fill-nginx-level-1
+    CSV: my-hub-demo-second-disk-fill-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-disk-fill-nginx-level-1"
+  - name: my-hub-demo-second-disk-fill-zookeeper-level-1
+    CSV: my-hub-demo-second-disk-fill-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-disk-fill-zookeeper-level-1"
+  - name: my-hub-demo-second-pod-cpu-hog-nginx-level-1
+    CSV: my-hub-demo-second-pod-cpu-hog-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-cpu-hog-nginx-level-1"
+  - name: my-hub-demo-second-pod-cpu-hog-zookeeper-level-1
+    CSV: my-hub-demo-second-pod-cpu-hog-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-cpu-hog-zookeeper-level-1"
+  - name: my-hub-demo-second-pod-io-stress-nginx-level-1
+    CSV: my-hub-demo-second-pod-io-stress-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-io-stress-nginx-level-1"
+  - name: my-hub-demo-second-pod-io-stress-zookeeper-level-1
+    CSV: my-hub-demo-second-pod-io-stress-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-io-stress-zookeeper-level-1"
+  - name: my-hub-demo-second-pod-memory-hog-nginx-level-1
+    CSV: my-hub-demo-second-pod-memory-hog-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-memory-hog-nginx-level-1"
+  - name: my-hub-demo-second-pod-memory-hog-zookeeper-level-1
+    CSV: my-hub-demo-second-pod-memory-hog-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-memory-hog-zookeeper-level-1"
+  - name: my-hub-demo-second-pod-network-latency-nginx-level-1
+    CSV: my-hub-demo-second-pod-network-latency-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-network-latency-nginx-level-1"
+  - name: my-hub-demo-second-pod-network-latency-zookeeper-level-1
+    CSV: my-hub-demo-second-pod-network-latency-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-network-latency-zookeeper-level-1"
+  - name: my-hub-demo-second-pod-network-loss-nginx-level-1
+    CSV: my-hub-demo-second-pod-network-loss-nginx-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-network-loss-nginx-level-1"
+  - name: my-hub-demo-second-pod-network-loss-zookeeper-level-1
+    CSV: my-hub-demo-second-pod-network-loss-zookeeper-level-1.chartserviceversion.yaml
+    desc: "my-hub-demo-second-pod-network-loss-zookeeper-level-1"

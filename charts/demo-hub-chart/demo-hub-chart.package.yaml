@@ -1,0 +1,44 @@
+packageName: demo-hub-chart
+experiments:
+  - name: demo-hub-chart-container-kill-nginx-level-1
+    CSV: demo-hub-chart-container-kill-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-container-kill-nginx-level-1"
+  - name: demo-hub-chart-container-kill-zookeeper-level-1
+    CSV: demo-hub-chart-container-kill-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-container-kill-zookeeper-level-1"
+  - name: demo-hub-chart-disk-fill-nginx-level-1
+    CSV: demo-hub-chart-disk-fill-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-disk-fill-nginx-level-1"
+  - name: demo-hub-chart-disk-fill-zookeeper-level-1
+    CSV: demo-hub-chart-disk-fill-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-disk-fill-zookeeper-level-1"
+  - name: demo-hub-chart-pod-cpu-hog-nginx-level-1
+    CSV: demo-hub-chart-pod-cpu-hog-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-cpu-hog-nginx-level-1"
+  - name: demo-hub-chart-pod-cpu-hog-zookeeper-level-1
+    CSV: demo-hub-chart-pod-cpu-hog-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-cpu-hog-zookeeper-level-1"
+  - name: demo-hub-chart-pod-io-stress-nginx-level-1
+    CSV: demo-hub-chart-pod-io-stress-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-io-stress-nginx-level-1"
+  - name: demo-hub-chart-pod-io-stress-zookeeper-level-1
+    CSV: demo-hub-chart-pod-io-stress-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-io-stress-zookeeper-level-1"
+  - name: demo-hub-chart-pod-memory-hog-nginx-level-1
+    CSV: demo-hub-chart-pod-memory-hog-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-memory-hog-nginx-level-1"
+  - name: demo-hub-chart-pod-memory-hog-zookeeper-level-1
+    CSV: demo-hub-chart-pod-memory-hog-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-memory-hog-zookeeper-level-1"
+  - name: demo-hub-chart-pod-network-latency-nginx-level-1
+    CSV: demo-hub-chart-pod-network-latency-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-network-latency-nginx-level-1"
+  - name: demo-hub-chart-pod-network-latency-zookeeper-level-1
+    CSV: demo-hub-chart-pod-network-latency-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-network-latency-zookeeper-level-1"
+  - name: demo-hub-chart-pod-network-loss-nginx-level-1
+    CSV: demo-hub-chart-pod-network-loss-nginx-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-network-loss-nginx-level-1"
+  - name: demo-hub-chart-pod-network-loss-zookeeper-level-1
+    CSV: demo-hub-chart-pod-network-loss-zookeeper-level-1.chartserviceversion.yaml
+    desc: "demo-hub-chart-pod-network-loss-zookeeper-level-1"

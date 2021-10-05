@@ -1,0 +1,84 @@
+apiVersion: litmuschaos.io/v1alpha1
+description:
+  message: |
+    Fillup Ephemeral Storage of a Resource
+kind: ChaosExperiment
+metadata:
+  name: my-hub-demo-second-disk-fill-nginx-level-1
+  labels:
+    name: my-hub-demo-second-disk-fill-nginx-level-1
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/component: chaosexperiment
+    app.kubernetes.io/version: latest
+spec:
+  definition:
+    scope: Namespaced
+    permissions:
+      - apiGroups:
+          - ""
+          - apps
+          - batch
+          - apps.openshift.io
+          - argoproj.io
+          - litmuschaos.io
+        resources:
+          - jobs
+          - pods
+          - pods/exec
+          - pods/log
+          - replicationcontrollers
+          - deployments
+          - statefulsets
+          - daemonsets
+          - replicasets
+          - deploymentconfigs
+          - rollouts
+          - events
+          - chaosengines
+          - chaosexperiments
+          - chaosresults
+        verbs:
+          - create
+          - list
+          - get
+          - patch
+          - update
+          - delete
+          - deletecollection
+    image: litmuschaos/go-runner:latest
+    imagePullPolicy: Always
+    args:
+      - -c
+      - ./experiments -name disk-fill
+    command:
+      - /bin/bash
+    env:
+      - name: TARGET_CONTAINER
+        value: "nginx"
+      - name: FILL_PERCENTAGE
+        value: "80"
+      - name: TOTAL_CHAOS_DURATION
+        value: "60"
+      - name: RAMP_TIME
+        value: ""
+      - name: LIB
+        value: "pumba"
+      - name: DATA_BLOCK_SIZE
+        value: "256"
+      - name: TARGET_PODS
+        value: ""
+      - name: EPHEMERAL_STORAGE_MEBIBYTES
+        value: ""
+      - name: PODS_AFFECTED_PERC
+        value: ""
+      - name: LIB_IMAGE
+        value: "litmuschaos/go-runner:latest"
+      - name: CONTAINER_PATH
+        value: "/var/lib/docker/containers"
+      - name: SEQUENCE
+        value: "parallel"
+    labels:
+      name: my-hub-demo-second-disk-fill-nginx-level-1
+      app.kubernetes.io/part-of: litmus
+      app.kubernetes.io/component: experiment-job
+      app.kubernetes.io/version: latest
