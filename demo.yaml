@@ -1,0 +1,254 @@
+-  name: demo-hub-chart
+   description: |
+     This Hub is for demo.
+     Generate custom hubs with customs experiments
+   platform: production
+   namespace: my-application
+   workflows:
+     - name: demo-hub-chart-level-1
+       experiments:
+         - container-kill-nginx-level-1
+         - disk-fill-nginx-level-1
+         - pod-memory-hog-nginx-level-1
+         - pod-cpu-hog-nginx-level-1
+         - pod-io-stress-nginx-level-1
+         - pod-network-loss-nginx-level-1
+         - pod-network-latency-nginx-level-1
+         - container-kill-zookeeper-level-1
+         - disk-fill-zookeeper-level-1
+         - pod-memory-hog-zookeeper-level-1
+         - pod-cpu-hog-zookeeper-level-1
+         - pod-io-stress-zookeeper-level-1
+         - pod-network-loss-zookeeper-level-1
+         - pod-network-latency-zookeeper-level-1
+   experiments:
+     - name: container-kill-nginx-level-1
+       template: container-kill
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         TOTAL_CHAOS_DURATION: 120
+         PODS_AFFECTED_PERC: 40
+
+     - name: disk-fill-nginx-level-1
+       template: disk-fill
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         EPHEMERAL_STORAGE_MEBIBYTES: 
+
+     - name: pod-memory-hog-nginx-level-1
+       template: pod-memory-hog-exec
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-cpu-hog-nginx-level-1
+       template: pod-cpu-hog-exec
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-io-stress-nginx-level-1
+       template: pod-io-stress
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-network-loss-nginx-level-1
+       template: pod-network-loss
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-network-latency-nginx-level-1
+       template: pod-network-latency
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         
+     - name: container-kill-zookeeper-level-1
+       template: container-kill
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         TOTAL_CHAOS_DURATION: 120
+         PODS_AFFECTED_PERC: 40
+
+     - name: disk-fill-zookeeper-level-1
+       template: disk-fill
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+         EPHEMERAL_STORAGE_MEBIBYTES: 
+
+     - name: pod-memory-hog-zookeeper-level-1
+       template: pod-memory-hog-exec
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-cpu-hog-zookeeper-level-1
+       template: pod-cpu-hog-exec
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-io-stress-zookeeper-level-1
+       template: pod-io-stress
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-network-loss-zookeeper-level-1
+       template: pod-network-loss
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-network-latency-zookeeper-level-1
+       template: pod-network-latency
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+         
+-  name: my-hub-demo-second
+   description: |
+     This is still a test of generation
+   platform: preproduction
+   namespace: random-namespace
+   workflows:
+     - name: my-hub-demo-second-random-namespace
+       experiments:
+         - container-kill-nginx-level-1
+         - disk-fill-nginx-level-1
+         - pod-memory-hog-nginx-level-1
+         - pod-cpu-hog-nginx-level-1
+         - pod-io-stress-nginx-level-1
+         - pod-network-loss-nginx-level-1
+         - pod-network-latency-nginx-level-1
+         - container-kill-zookeeper-level-1
+         - disk-fill-zookeeper-level-1
+         - pod-memory-hog-zookeeper-level-1
+         - pod-cpu-hog-zookeeper-level-1
+         - pod-io-stress-zookeeper-level-1
+         - pod-network-loss-zookeeper-level-1
+         - pod-network-latency-zookeeper-level-1
+   experiments:
+     - name: container-kill-nginx-level-1
+       template: container-kill
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         TOTAL_CHAOS_DURATION: 120
+         PODS_AFFECTED_PERC: 40
+
+     - name: disk-fill-nginx-level-1
+       template: disk-fill
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         EPHEMERAL_STORAGE_MEBIBYTES: 
+
+     - name: pod-memory-hog-nginx-level-1
+       template: pod-memory-hog-exec
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-cpu-hog-nginx-level-1
+       template: pod-cpu-hog-exec
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-io-stress-nginx-level-1
+       template: pod-io-stress
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-network-loss-nginx-level-1
+       template: pod-network-loss
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-network-latency-nginx-level-1
+       template: pod-network-latency
+       label: 'app=my-application'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         
+     - name: container-kill-zookeeper-level-1
+       template: container-kill
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+         TOTAL_CHAOS_DURATION: 120
+         PODS_AFFECTED_PERC: 40
+
+     - name: disk-fill-zookeeper-level-1
+       template: disk-fill
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+         EPHEMERAL_STORAGE_MEBIBYTES: 
+
+     - name: pod-memory-hog-zookeeper-level-1
+       template: pod-memory-hog-exec
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-cpu-hog-zookeeper-level-1
+       template: pod-cpu-hog-exec
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-io-stress-zookeeper-level-1
+       template: pod-io-stress
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
+
+     - name: pod-network-loss-zookeeper-level-1
+       template: pod-network-loss
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: nginx
+
+     - name: pod-network-latency-zookeeper-level-1
+       template: pod-network-latency
+       label: 'composant=dd021-zk'
+       kind: StatefulSet
+       args:
+         TARGET_CONTAINER: zookeeper
